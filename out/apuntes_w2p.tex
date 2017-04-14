@@ -1,0 +1,111 @@
+\documentclass[12pt,spanish,]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+    \setmainfont[]{Ubuntu}
+    \setmonofont[Mapping=tex-ansi]{Ubuntu Mono}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[a4paper]{geometry}
+\usepackage[unicode=true]{hyperref}
+\PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
+\hypersetup{
+            pdftitle={Apuntes web2py},
+            pdfauthor={Sergio Alvariño salvari@gmail.com},
+            colorlinks=true,
+            linkcolor=Maroon,
+            citecolor=Blue,
+            urlcolor=Blue,
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[shorthands=off,main=spanish]{babel}
+\else
+  \usepackage{polyglossia}
+  \setmainlanguage[]{spanish}
+\fi
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+\title{Apuntes web2py}
+\author{Sergio Alvariño
+\href{mailto:salvari@gmail.com}{\nolinkurl{salvari@gmail.com}}}
+\date{abril-2017}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Apuntes de web2py
+
+Solo para referencia rápida y personal.
+\end{abstract}
+
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\section{Web2py}\label{web2py}
+
+Toda la info \href{http://web2py.com}{aquí}
+
+\section{Tutoriales en la red}\label{tutoriales-en-la-red}
+
+\subsection{Killer Web Development por Marco
+Laspe}\label{killer-web-development-por-marco-laspe}
+
+Disponible \href{http://killer-web-development.com}{aquí}
+
+\subsubsection{Cambios}\label{cambios}
+
+\texttt{Crud} debe ser importado explícitamente:
+
+\begin{verbatim}
+from gluon.tools import Crud
+crud = Crud(db)
+\end{verbatim}
+
+Despues ya podemos seguir el tutorial haciendo por ejemplo:
+
+\begin{verbatim}
+def entry_post():
+    """returns a form where the user can entry a post"""
+    form = crud.create(db.post)
+    return dict(form=form)
+\end{verbatim}
+
+\end{document}

@@ -1,0 +1,22 @@
+= Web2py =
+
+Toda la info [http://web2py.com aquí]
+
+= Tutoriales en la red =
+
+== Killer Web Development por Marco Laspe ==
+
+Disponible [http://killer-web-development.com aquí]
+
+=== Cambios ===
+
+<code>Crud</code> debe ser importado explícitamente:
+
+<pre class="{python}">from gluon.tools import Crud
+crud = Crud(db)</pre>
+Despues ya podemos seguir el tutorial haciendo por ejemplo:
+
+<pre class="{python}">def entry_post():
+    &quot;&quot;&quot;returns a form where the user can entry a post&quot;&quot;&quot;
+    form = crud.create(db.post)
+    return dict(form=form)</pre>

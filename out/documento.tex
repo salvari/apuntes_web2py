@@ -1,0 +1,459 @@
+\documentclass[12pt,es-ES,]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+    \setmainfont{Ubuntu}
+    \setmonofont[Mapping=tex-ansi]{Ubuntu Mono}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[a4paper]{geometry}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={Sergio Alvariño salvari@gmail.com},
+            pdftitle={Usando Pandoc},
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{5}
+\ifxetex
+  \usepackage{polyglossia}
+  \setmainlanguage{es-ES}
+\else
+  \usepackage[es-ES]{babel}
+\fi
+
+\title{Usando Pandoc}
+\author{Sergio Alvariño
+\href{mailto:salvari@gmail.com}{\nolinkurl{salvari@gmail.com}}}
+\date{abril-2016}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Una chuleta para usar Pandoc, copiado descaradamente de varios sitios de
+internet.
+
+Solo para referencia rápida y personal.
+\end{abstract}
+
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+\section{¿Cómo usar esto?}\label{cuxf3mo-usar-esto}
+
+\subsection{Muy rápido}\label{muy-ruxe1pido}
+
+Clona el repo en un directorio :
+
+\begin{verbatim}
+git clone https://bitbucket.org/salvari/pandoc_basico
+\end{verbatim}
+
+Renombra el directorio:
+
+\begin{verbatim}
+mv pandoc_basico miProyecto
+\end{verbatim}
+
+Elimina la info de git
+
+\begin{verbatim}
+rm -rf miProyecto/.git
+\end{verbatim}
+
+Edita el fichero miProyecto/src/documento.md con tu editor de texto
+favorito.
+
+Ejecuta:
+
+\begin{description}
+\item[make]
+Para generar todos los ficheros de salida y el fichero README.md
+(equivale a \emph{make all})
+\item[make clean]
+Para borrar todos los ficheros de salida
+\item[make reset]
+Equivale a \emph{make clean all}
+\end{description}
+
+\subsection{Más detalles}\label{muxe1s-detalles}
+
+El makefile está preparado para procesar \textbf{todos} los ficheros con
+extensión \emph{.md} que haya en el directorio \emph{src}. Esto permite
+escribir documentos largos y dividirlos en secciones, por ejemplo
+podríamos tener los siguientes documentos en el directorio \emph{src}
+
+\begin{verbatim}
+00_Comienzo.md
+10_Capitulo_01.md
+20_Capitulo_02.md
+30_Conclusion.md
+40_apendices.md
+\end{verbatim}
+
+Al ejecutar make nos crearía \textbf{un solo documento de salida}
+concatenando todos los ficheros. El orden en que los concatena es el
+orden en el que aparecen al hacer un \emph{ls} por eso se nombran con
+una numeración al principio que permita ordenarlos a gusto del autor.
+
+Si quieres cambiar el nombre del fichero de salida (\emph{documento})
+tendrás que editar el makefile y cambiar la línea:
+
+\begin{verbatim}
+target  := documento
+\end{verbatim}
+
+Otras líneas que puedes tocar en el makefile son las que especifican el
+idioma y los tipos de letra usados.
+
+\section{¿Qué es Pandoc?}\label{quuxe9-es-pandoc}
+
+Como explican en http://pandoc.org, Pandoc es una librería en Haskell
+para hacer conversión de documentos de un formato markup a otro. Y
+también es una herramienta de terminal de comandos que usa esa librería.
+
+Lo que nos permite Pandoc a la hora de documentar un proyecto es
+mantener la documentación en un formato abierto y sencillo (markdown) y
+generar salidas en distintos formatos (pdf, mediawiki, epub, html, etc)
+con un simple comando.
+
+\section{¿Qué necesitas tener
+instalado?}\label{quuxe9-necesitas-tener-instalado}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Pandoc
+\item
+  make
+\item
+  git (no es imprescindible pero muy recomendable)
+\item
+  Las plantillas de Pandoc (o \emph{templates})
+\item
+  Un buen editor de texto
+\end{itemize}
+
+\section{Chuletario de Pandoc}\label{chuletario-de-pandoc}
+
+\subsection{Backslash Escapes}\label{backslash-escapes}
+
+Salvo que estemos dentro de un bloque de código o de ``código en
+linea'', \textbf{cualquier carácter de puntuación o espacio} precedido
+de contrabarra se tratará de forma literal, incluso si ese carácter
+normalmente indique algún formato.
+
+\subsection{Bloque de título}\label{bloque-de-tuxedtulo}
+
+Es una forma rápida de indicar el título el autor o autores y la fecha.
+Tiene que ir al principio del documento
+
+\begin{verbatim}
+% título
+% autor(es) (separados por :)
+% fecha
+\end{verbatim}
+
+Alternativamente se puede usar otro estilo para el bloque de título,
+mucho más completo, en formato
+\href{https://en.wikipedia.org/wiki/YAML}{YAML}, especificando
+variables. No puede usarse simultáneamente con el anterior, hay que
+escoger entre los dos estilos.
+
+Se pueden especificar todo tipo de variables \footnote{Ojo por que en el
+  makefile propuesto se especifica el lenguaje, asi que la variable del
+  bloque de título no va a tener efecto en este caso.}.
+
+\begin{verbatim}
+---
+title: Título
+author:
+- Autor Uno <autor.uno@correo.com>
+- Otro autor <otroautor@correo.com>
+tags: [nothing, nothingness]
+date: enero-2016
+lang: es-ES
+abstract: |
+  Este es el resumen.
+
+  Con dos párrafos.
+...
+---
+\end{verbatim}
+
+\subsection{Incrustar TeX y HTML}\label{incrustar-tex-y-html}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Los comandos TeX se pasan de forma transparente al Markdown, y afectan
+  solo a la salida de LaTeX y ConTeXt; en el resto de casos se borran
+\item
+  El código HTML pasará a la salida sin cambios, pero el Markdown dentro
+  de los bloques HTML se procesa como Markdown
+\end{itemize}
+
+\subsection{Párrafos y retornos de
+línea}\label{puxe1rrafos-y-retornos-de-luxednea}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  Un párrafo es una o más líneas de texto separadas por una linea en
+  blanco del resto
+\item
+  Una línea que termina con dos espacios, o una línea que termina con un
+  fin de linea escapado (contrabarra seguida de retorno de linea) indica
+  un cambio de linea manual
+\end{itemize}
+
+\subsection{Itálica, negrita, superescrito, subesctrito,
+tachado}\label{ituxe1lica-negrita-superescrito-subesctrito-tachado}
+
+\begin{verbatim}
+*Itálica* and **negrita** se indican con asteriscos.
+
+Para  ~~tachar~~ texto usa tildes dobles.
+
+Superscrito se indica así: 2^ndo^.
+
+Subescrito con tildes simples, así: H~2~O.
+
+Los espacios en el superescrito y el subescrito tienen que ir escapados,
+p.ej., H~esto\ es \ un\ subescrito~.
+\end{verbatim}
+
+\subsection{TeX matématico o código incrustado en
+linea}\label{tex-matuxe9matico-o-cuxf3digo-incrustado-en-linea}
+
+\begin{verbatim}
+El TeX matemático va entre signos$: $2 + 2$.
+
+El código en linea va entre comillas invertidas: `echo 'hello'`
+\end{verbatim}
+
+\subsection{Enlaces e imágenes}\label{enlaces-e-imuxe1genes}
+
+\begin{verbatim}
+<http://example.com>
+<foo@bar.com>
+[inline link](http://example.com "Title")
+![inline image](/path/to/image, "alt text")
+
+[reference link][id]
+[implicit reference link][]
+![reference image][id2]
+
+[id]: http://example.com "Title"
+[implicit reference link]: http://example.com
+[id2]: /path/to/image "alt text"
+\end{verbatim}
+
+\subsection{Notas al pie de página}\label{notas-al-pie-de-puxe1gina}
+
+\begin{verbatim}
+Las notas en linea son como
+esta.^[Nótese que las notas en linea no pueden tener más de un párrafo.]
+Las notas de referencia son como esta.[^id]
+
+[^id]:  Las notas de referencia pueden contener varios párrafos.
+
+    Los parámetros a continuación deben estar identados.
+\end{verbatim}
+
+\subsection{Citas}\label{citas}
+
+\begin{verbatim}
+Blah blah [see @doe99, pp. 33-35; also @smith04, ch. 1].
+
+Blah blah [@doe99, pp. 33-35, 38-39 and *passim*].
+
+Blah blah [@smith04; @doe99].
+
+Smith says blah [-@smith04].
+
+@smith04 says blah.
+
+@smith04 [p. 33] says blah.
+\end{verbatim}
+
+\subsection{Encabezados}\label{encabezados}
+
+\begin{verbatim}
+Encabezado 1
+========
+
+Encabezado 2
+--------
+
+# Encabezado 1 #
+
+## Encabezado 2 ##
+\end{verbatim}
+
+Las almohadillas de cierre \# son opcionales. Es necesario añadir una
+línea en blanco antes y después de cada cabecera.
+
+\subsection{Listas}\label{listas}
+
+\paragraph{Listas Ordenadas}\label{listas-ordenadas}
+
+\begin{verbatim}
+1. example
+2. example
+
+A) example
+B) example
+\end{verbatim}
+
+\paragraph{Listas desordenadas}\label{listas-desordenadas}
+
+Los items de la lista deben ir marcados con `*', `+', or `-'.
+
+\begin{verbatim}
++   example
+-   example
+*   example
+\end{verbatim}
+
+Las listas se pueden anidar de la forma usual:
+
+\begin{verbatim}
++   example
+    +   example
++   example
+\end{verbatim}
+
+\paragraph{Listas de definición}\label{listas-de-definiciuxf3n}
+
+\begin{verbatim}
+Term 1
+
+:   Definition 1
+
+Term 2
+
+:   Definition 2
+    Second paragraph of definition 2.
+\end{verbatim}
+
+\subsection{Blockquotes}\label{blockquotes}
+
+\begin{verbatim}
+>   blockquote
+>>  nested blockquote
+\end{verbatim}
+
+Es necesario añadir lineas en blanco antes y después de los
+bloques-cita.
+
+\subsection{Tablas}\label{tablas}
+
+\begin{verbatim}
+  Right     Left     Center     Default
+-------     ------ ----------   -------
+     12     12        12            12
+    123     123       123          123
+      1     1          1             1
+
+Table:  Demonstration of simple table syntax.
+\end{verbatim}
+
+(Para tablas más complejas consulta la
+\href{http://pandoc.org/README.html\#tables}{documentación de Pandoc}.)
+
+\subsection{Bloques de código}\label{bloques-de-cuxf3digo}
+
+Los bloques de código empiezan con tres o más tildes; y acaban por lo
+menos con el mismo número de tildes:
+
+\begin{verbatim}
+~~~~~~~
+{code here}
+~~~~~~~
+\end{verbatim}
+
+Opcionalmente, se puede especificar el lenguaje que corresponde al
+bloque de código:
+
+\begin{verbatim}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {.haskell .numberLines}
+qsort []     = []
+qsort (x:xs) = qsort (filter (< x) xs) ++ [x] ++
+               qsort (filter (>= x) xs)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\end{verbatim}
+
+\subsection{Lineas horizontales}\label{lineas-horizontales}
+
+3 o mas guiones o asteriscos en una linea (se permiten espacios
+intercalados)
+
+\begin{verbatim}
+---
+* * *
+- - - -
+\end{verbatim}
+
+\subsection{Bloques verbatim}\label{bloques-verbatim}
+
+Todo el texto identado cuatro espacios
+
+\begin{verbatim}
+Ejemplo Esto es un bloque verbatim y por ejemplo *esto* aparece
+tal cual y no en itálica.
+\end{verbatim}
+
+\section{En que me he basado (o copiado si lo
+prefieres)}\label{en-que-me-he-basado-o-copiado-si-lo-prefieres}
+
+\begin{itemize}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  En la \href{http://pandoc.org/README.html}{guia de usuario de Pandoc}
+  Importante leersela para sacarle todo el jugo a esta herramienta
+\item
+  En la
+  \href{https://github.com/dsanson/Pandoc.tmbundle/blob/master/Support/doc/cheatsheet.markdown}{chuleta
+  de Pandoc} de \href{https://github.com/dsanson}{David Sanson},
+  perfecta para referencia rápida
+\item
+  Para hacer el makefile me he leido varios tutoriales y copiado
+  descaradamente de varios sitios que olvidé apuntar (lo siento)
+\end{itemize}
+
+\end{document}

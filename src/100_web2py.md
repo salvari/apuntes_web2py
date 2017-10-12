@@ -309,6 +309,87 @@ server {
 
 rollo
 
+## Preparando una aplicación
+1. Crea una aplicación desde el interfaz de administración, en nuestro
+caso la llamaremos __pyfinder__
+
+2. Para usar _MySQL_ como motor de base de datos: Editamos el fichero
+_applications/alloer/private/appconfig.ini_, tenemos que poner el uri
+que apunta a nuestra base de datos, sustituyendo _dbUser_, _dbPass_ y
+_dbName_ por valores reales.
+
+~~~~{python} 
+    ; App configuration
+    [app]
+    name        = PyFinder
+    author      = Sergio Alvariño <sergio.alvarino@vodafone.com>
+    description = TxFinder en Web2Py
+    keywords    = Thope, TxFinder, web2py, python, framework
+    generator   = Web2py Web Framework
+     
+    ; Host configuration
+    [host]
+    names = localhost:*, 127.0.0.1:*, *:*, *
+     
+    ; db configuration
+    [db]
+    ; uri       = sqlite://storage.sqlite
+    uri         = mysql://dbUser:dbPass@localhost/dbName
+     
+    migrate   = true
+    pool_size = 10 ; ignored for sqlite
+     
+    ; smtp address and credentials
+    [smtp]
+    server = smtp.gmail.com:587
+    sender = salvari@gmail.com
+    login  = username:password
+    tls    = true
+    ssl    = true
+     
+    ; form styling
+    [forms]
+    formstyle = bootstrap3_inline
+    separator = 
+~~~~
+ 
+3. Editamos el fichero _applications/alloer/models/db.py_ Tenemos que
+asegurarnos de editar esta sección para que no nos de problemas con
+palabras reservadas:
+
+~~~~{python}
+    db = DAL(myconf.get('db.uri'),
+             pool_size=myconf.get('db.pool_size'),
+             migrate_enabled=myconf.get('db.migrate'),
+             check_reserved=['mysql'])
+    #         check_reserved=['all'])
+~~~~ 
+ 
+4. Creamos un fichero *db_custom.py* en el directorio: _applications/alloer/models_
+El fichero tiene que ser parecido al que figura a continuación.
+
+    __IMPORTANTE__: en cada tabla crear el campo _id_ de tipo _integer_, es para uso interno de _web2py_
+    
+    __IMPORTANTE__: especificar `migrate FALSE` al final en todas las tablas externas
+ 
+### Ejemplo de contenido del fichero *db_custom.py*
+
+~~~~{python}
+db.define_table('afoxtfo',
+    Field('id', 'integer'),
+    Field('opti_of_connection_id' , 'string'),
+    Field('afo' , 'string'),
+    Field('afo_fiber' , 'string'),
+    Field('opti_cable_id' , 'string'),
+    Field('tfo' , 'string'),
+    Field('tfo_fiber' , 'string'),
+    Field('cable_endpoint' , 'string'),
+    Field('side' , 'string'),
+    Field('state' , 'string'),
+    Field('loaddate' , 'string'),
+    migrate = False);
+~~~~
+
 
 ## DAL
 

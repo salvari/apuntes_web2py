@@ -262,6 +262,82 @@ Creamos un fichero */etc/nginx/sites-available/web2py* con el siguiente contenid
 
 rollo
 
+Preparando una aplicación
+-------------------------
+
+1.  Crea una aplicación desde el interfaz de administración, en nuestro caso la llamaremos **pyfinder**
+
+2.  Para usar *MySQL* como motor de base de datos: Editamos el fichero *applications/alloer/private/appconfig.ini*, tenemos que poner el uri que apunta a nuestra base de datos, sustituyendo *dbUser*, *dbPass* y *dbName* por valores reales.
+
+``` {python}
+    ; App configuration
+    [app]
+    name        = PyFinder
+    author      = Sergio Alvariño <sergio.alvarino@vodafone.com>
+    description = TxFinder en Web2Py
+    keywords    = Thope, TxFinder, web2py, python, framework
+    generator   = Web2py Web Framework
+     
+    ; Host configuration
+    [host]
+    names = localhost:*, 127.0.0.1:*, *:*, *
+     
+    ; db configuration
+    [db]
+    ; uri       = sqlite://storage.sqlite
+    uri         = mysql://dbUser:dbPass@localhost/dbName
+     
+    migrate   = true
+    pool_size = 10 ; ignored for sqlite
+     
+    ; smtp address and credentials
+    [smtp]
+    server = smtp.gmail.com:587
+    sender = salvari@gmail.com
+    login  = username:password
+    tls    = true
+    ssl    = true
+     
+    ; form styling
+    [forms]
+    formstyle = bootstrap3_inline
+    separator = 
+```
+
+1.  Editamos el fichero *applications/alloer/models/db.py* Tenemos que asegurarnos de editar esta sección para que no nos de problemas con palabras reservadas:
+
+``` {python}
+    db = DAL(myconf.get('db.uri'),
+             pool_size=myconf.get('db.pool_size'),
+             migrate_enabled=myconf.get('db.migrate'),
+             check_reserved=['mysql'])
+    #         check_reserved=['all'])
+```
+
+1.  Creamos un fichero *db\_custom.py* en el directorio: *applications/alloer/models* El fichero tiene que ser parecido al que figura a continuación.
+
+    **IMPORTANTE**: en cada tabla crear el campo *id* de tipo *integer*, es para uso interno de *web2py*
+
+    **IMPORTANTE**: especificar `migrate FALSE` al final en todas las tablas externas
+
+### Ejemplo de contenido del fichero *db\_custom.py*
+
+``` {python}
+db.define_table('afoxtfo',
+    Field('id', 'integer'),
+    Field('opti_of_connection_id' , 'string'),
+    Field('afo' , 'string'),
+    Field('afo_fiber' , 'string'),
+    Field('opti_cable_id' , 'string'),
+    Field('tfo' , 'string'),
+    Field('tfo_fiber' , 'string'),
+    Field('cable_endpoint' , 'string'),
+    Field('side' , 'string'),
+    Field('state' , 'string'),
+    Field('loaddate' , 'string'),
+    migrate = False);
+```
+
 DAL
 ---
 

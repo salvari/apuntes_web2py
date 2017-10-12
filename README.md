@@ -341,7 +341,7 @@ db.define_table('afoxtfo',
 DAL
 ---
 
-### Union de tablas
+### Union de tablas db.executesql
 
 El código de abajo funciona correctamente, el método `executesql` necesita que le pasemos una referencia a un campo real de la base de datos, no he sido capaz de hacerlo funcionar de ninguna otra forma.
 
@@ -371,6 +371,86 @@ db.executesql([SQL code returning person.name and dog.name fields], fields=[db.p
 db.executesql([SQL code returning all fields from db.person], fields=db.person)
 db.executesql([SQL code returning all fields from both tables], fields=[db.person, db.dog])
 db.executesql([SQL code returning person.name and all db.dog fields], fields=[db.person.name, db.dog])
+```
+
+web2py y git
+------------
+
+Hay varias formas de hacer el desarrollo. Yo he optado por tener un web2py
+
+Es importante tener el siguiente fichero *.gitignore* en el directorio *web2py*
+
+``` {git}
+.*
+!.gitignore
+*.pyc
+*.pyo
+*~
+#*
+*.1
+*.bak
+*.bak2
+*.svn
+*.w2p
+*.class
+*.rej
+*.orig
+Thumbs.db
+.DS_Store
+*.DS_Store
+# index.yaml
+# routes.py
+# logging.conf
+# gluon/tests/VERSION
+# gluon/tests/sql.log
+httpserver.log
+httpserver.pid
+parameters*.py
+# ./deposit
+# ./benchmark
+# ./build
+# ./dist*
+# ./dummy_tests
+# ./optional_contrib
+# ./ssl
+# ./docs
+# ./logs
+# ./*.zip
+# ./gluon/*.1
+# ./gluon/*.txt
+# ./admin.w2p
+# ./examples.w2p
+CHANGELOG
+LICENSE
+MANIFEST.in
+README.markdown
+VERSION
+anyserver.py
+web2py.py
+examples/*
+handlers/*
+extras/*
+gluon/*
+scripts/*
+site-packages/*
+applications/welcome
+applications/examples
+applications/admin
+applications/*/databases/*
+applications/*/sessions/*
+applications/*/errors/*
+applications/*/cache/*
+applications/*/uploads/*
+applications/*/private/*
+applications/*/*.py[oc]
+applications/*/static/temp
+applications/*/progress.log
+# applications/examples/static/epydoc
+# applications/examples/static/sphinx
+# applications/admin/cron/cron.master
+# HOWTO-web2py-devel
+# logs/
+# cron.master
 ```
 
 Tutoriales en la red

@@ -1,3 +1,7 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
 \documentclass[12pt,spanish,]{article}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
@@ -6,12 +10,9 @@
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
 \else % if luatex or xelatex
-  \ifxetex
-    \usepackage{mathspec}
-  \else
-    \usepackage{fontspec}
-  \fi
+  \usepackage{unicode-math}
   \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
     \setmainfont[]{Ubuntu}
     \setmonofont[Mapping=tex-ansi]{Ubuntu Mono}
@@ -20,12 +21,17 @@
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 % use microtype if available
 \IfFileExists{microtype.sty}{%
-\usepackage{microtype}
+\usepackage[]{microtype}
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\usepackage[a4paper]{geometry}
-\usepackage[unicode=true]{hyperref}
-\PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{xcolor}
+\usepackage{hyperref}
 \hypersetup{
             pdftitle={Apuntes web2py},
             pdfauthor={Sergio Alvariño salvari@gmail.com},
@@ -35,18 +41,7 @@
             urlcolor=Blue,
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
-  \usepackage[shorthands=off,main=spanish]{babel}
-\else
-  \usepackage{polyglossia}
-  \setmainlanguage[]{spanish}
-\fi
-\IfFileExists{parskip.sty}{%
-\usepackage{parskip}
-}{% else
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt plus 2pt minus 1pt}
-}
+\usepackage[a4paper]{geometry}
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -59,6 +54,19 @@
 \ifx\subparagraph\undefined\else
 \let\oldsubparagraph\subparagraph
 \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[shorthands=off,main=spanish]{babel}
+\else
+  % load polyglossia as late as possible as it *could* call bidi if RTL lang (e.g. Hebrew or Arabic)
+  \usepackage{polyglossia}
+  \setmainlanguage[]{spanish}
 \fi
 
 \title{Apuntes web2py}
@@ -75,17 +83,20 @@ Solo para referencia rápida y personal.
 \end{abstract}
 
 {
-\hypersetup{linkcolor=black}
+\hypersetup{linkcolor=}
 \setcounter{tocdepth}{3}
 \tableofcontents
 }
-\section{Web2py}\label{web2py}
+\hypertarget{web2py}{%
+\section{Web2py}\label{web2py}}
 
 Toda la info \href{http://web2py.com}{aquí}
 
-\subsection{Instalación de web2py}\label{instalaciuxf3n-de-web2py}
+\hypertarget{instalaciuxf3n-de-web2py}{%
+\subsection{Instalación de web2py}\label{instalaciuxf3n-de-web2py}}
 
-\subsubsection{Instalación standalone}\label{instalaciuxf3n-standalone}
+\hypertarget{instalaciuxf3n-standalone}{%
+\subsubsection{Instalación standalone}\label{instalaciuxf3n-standalone}}
 
 Bajamos el programa de la
 \href{http://www.web2py.com/init/default/download}{web de Web2py}
@@ -130,11 +141,13 @@ python web2py.py -a 'admin_password' -c server.crt -k server.key -i 0.0.0.0 -p 8
 Y ya podemos acceder nuestro server en la dirección
 \texttt{https://localhost:8000}
 
+\hypertarget{desplegar-web2py-con-nginx}{%
 \subsubsection{Desplegar web2py con
-Nginx}\label{desplegar-web2py-con-nginx}
+Nginx}\label{desplegar-web2py-con-nginx}}
 
+\hypertarget{instalaciuxf3n-de-web2py-1}{%
 \paragraph{\texorpdfstring{Instalación de
-\emph{web2py}}{Instalación de web2py}}\label{instalaciuxf3n-de-web2py-1}
+\emph{web2py}}{Instalación de web2py}}\label{instalaciuxf3n-de-web2py-1}}
 
 Vamos a instalar web2py en \emph{/var/www} a nivel global. Será nuestro
 web2py para servir aplicaciones en producción. \footnote{Mejor comprobar
@@ -195,7 +208,8 @@ web2py.
 Ya podemos parar el \emph{web2py} que hemos arrancado con un
 \textbf{Crl+C}
 
-\paragraph{Instalación de uWSGI}\label{instalaciuxf3n-de-uwsgi}
+\hypertarget{instalaciuxf3n-de-uwsgi}{%
+\paragraph{Instalación de uWSGI}\label{instalaciuxf3n-de-uwsgi}}
 
 Lo vamos a instalar globalmente, hay que asegurarse de que tenemos
 instalados:
@@ -346,7 +360,8 @@ systemctl enable uwsgi
 systemctl start uwsgi
 \end{verbatim}
 
-\paragraph{Nginx}\label{nginx}
+\hypertarget{nginx}{%
+\paragraph{Nginx}\label{nginx}}
 
 Copiamos el certificado y la clave SSL al directorio
 \emph{/etc/nginx/ssl}:
@@ -404,13 +419,15 @@ server {
 }
 \end{verbatim}
 
+\hypertarget{desplegar-un-repo-de-desarrollo-con-un-web2py-dedicado}{%
 \subsubsection{Desplegar un repo de desarrollo con un web2py
-dedicado}\label{desplegar-un-repo-de-desarrollo-con-un-web2py-dedicado}
+dedicado}\label{desplegar-un-repo-de-desarrollo-con-un-web2py-dedicado}}
 
 rollo
 
+\hypertarget{preparando-una-aplicaciuxf3n}{%
 \subsection{Preparando una
-aplicación}\label{preparando-una-aplicaciuxf3n}
+aplicación}\label{preparando-una-aplicaciuxf3n}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -432,19 +449,19 @@ aplicación}\label{preparando-una-aplicaciuxf3n}
     description = TxFinder en Web2Py
     keywords    = Thope, TxFinder, web2py, python, framework
     generator   = Web2py Web Framework
-     
+
     ; Host configuration
     [host]
     names = localhost:*, 127.0.0.1:*, *:*, *
-     
+
     ; db configuration
     [db]
     ; uri       = sqlite://storage.sqlite
     uri         = mysql://dbUser:dbPass@localhost/dbName
-     
+
     migrate   = true
     pool_size = 10 ; ignored for sqlite
-     
+
     ; smtp address and credentials
     [smtp]
     server = smtp.gmail.com:587
@@ -452,11 +469,11 @@ aplicación}\label{preparando-una-aplicaciuxf3n}
     login  = username:password
     tls    = true
     ssl    = true
-     
+
     ; form styling
     [forms]
     formstyle = bootstrap3_inline
-    separator = 
+    separator =
 \end{verbatim}
 
 \begin{enumerate}
@@ -492,8 +509,9 @@ aplicación}\label{preparando-una-aplicaciuxf3n}
   todas las tablas externas
 \end{enumerate}
 
+\hypertarget{ejemplo-de-contenido-del-fichero-db_custom.py}{%
 \subsubsection{\texorpdfstring{Ejemplo de contenido del fichero
-\emph{db\_custom.py}}{Ejemplo de contenido del fichero db\_custom.py}}\label{ejemplo-de-contenido-del-fichero-db_custom.py}
+\emph{db\_custom.py}}{Ejemplo de contenido del fichero db\_custom.py}}\label{ejemplo-de-contenido-del-fichero-db_custom.py}}
 
 \begin{verbatim}
 db.define_table('afoxtfo',
@@ -511,10 +529,12 @@ db.define_table('afoxtfo',
     migrate = False);
 \end{verbatim}
 
-\subsection{DAL}\label{dal}
+\hypertarget{dal}{%
+\subsection{DAL}\label{dal}}
 
+\hypertarget{union-de-tablas-db.executesql}{%
 \subsubsection{Union de tablas
-db.executesql}\label{union-de-tablas-db.executesql}
+db.executesql}\label{union-de-tablas-db.executesql}}
 
 El código de abajo funciona correctamente, el método \texttt{executesql}
 necesita que le pasemos una referencia a un campo real de la base de
@@ -548,7 +568,8 @@ db.executesql([SQL code returning all fields from both tables], fields=[db.perso
 db.executesql([SQL code returning person.name and all db.dog fields], fields=[db.person.name, db.dog])
 \end{verbatim}
 
-\subsection{web2py y git}\label{web2py-y-git}
+\hypertarget{web2py-y-git}{%
+\subsection{web2py y git}\label{web2py-y-git}}
 
 Hay varias formas de hacer el desarrollo. Yo he optado por tener un
 web2py
@@ -629,14 +650,113 @@ applications/*/progress.log
 # cron.master
 \end{verbatim}
 
-\section{Tutoriales en la red}\label{tutoriales-en-la-red}
+\hypertarget{web2py-y-d3.js}{%
+\subsection{web2py y d3.js}\label{web2py-y-d3.js}}
 
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Created a new app with the wizard (default layout, name: TestD3).
+  Views: index,error and visualizations where I want to have the d3
+  stuff.
+\item
+  Put the d3 javascript file in static/js
+\item
+  In View TestD3/views/default/visualizations.html:
+
+\begin{verbatim}
+            {{response.files.append(URL(r=request,c='static',f='/js/d3.js'))}}
+            {{extend 'layout.html'}}
+
+            <p>Here we would like to have some d3.js plots</p>
+            <script type="text/javascript">
+
+                      d3.select('body').append('svg').append('circle').style("stroke", "gray").style("fill", "red").attr("r", 40).attr("cx", 50).attr("cy", 50);
+            </script>
+\end{verbatim}
+\end{enumerate}
+
+This produced a red circle but the circle below the copyright 2013 --
+powered by web2py line. Of course I have to select properly because I
+want to have the circle inside:
+
+WRITE THE APPROPIATE CONTROLLER I ll take some time to dive into web2py
+and then I will post whatever worked with d3.
+
+(https://localhost:8000/testD3/default/visualizations)
+
+More on this subject
+https://groups.google.com/forum/\#!msg/web2py/lngBXrQIh1g/DqEmW8FkkoEJ
+
+A nice one:
+https://stackoverflow.com/questions/34326343/embedding-d3-js-graph-in-a-web2py-bootstrap-page
+
+https://github.com/willimoa/welcome\_d3
+
+Really important: https://github.com/monotasker/plugin\_d3
+
+Interesting:
+https://realpython.com/blog/python/web-development-with-flask-fetching-data-with-requests/
+http://grokbase.com/t/gg/d3-js/14425gneaf/web2py-d3-json-where-should-i-put-the-json-file
+http://www.web2pyslices.com/slice/show/1689/animations-of-svg-images-and-paths-with-d3js
+
+Pure D3 https://github.com/d3/d3/wiki/tutorials
+http://alignedleft.com/tutorials/d3 http://gcoch.github.io/D3-tutorial/
+https://bl.ocks.org/mbostock/3883245
+https://bl.ocks.org/basilesimon/29efb0e0a43dde81985c20d9a862e34e
+https://bl.ocks.org/d3noob/402dd382a51a4f6eea487f9a35566de0
+https://leanpub.com/D3-Tips-and-Tricks/read\#leanpub-auto-crossfilter-dcjs-and-d3js-for-data-discovery
+http://bl.ocks.org/cpbotha/5073718
+
+Google charts
+
+http://www.web2pyslices.com/slice/show/1721/google-charts-plugin
+
+\hypertarget{varios}{%
+\section{Varios}\label{varios}}
+
+\hypertarget{executesql}{%
+\subsection{executeSql}\label{executesql}}
+
+Hay que estudiar esto con calma y aprender a usarlo con precisión:
+
+\begin{verbatim}
+    coloc_node_orig = db(  (db.site.id == myid)
+                         & (db.site.site_name == db.segment.origination_site_name)
+                        ).select(db.segment.origination_node.with_alias('node'),
+                                 distinct=True)
+    coloc_node_dest = db(  (db.site.id == myid)
+                         & (db.site.site_name == db.segment.destination_site_name)
+                        ).select(db.segment.destination_node.with_alias('node'),
+                                 distinct=True)
+
+    sql = """
+    SELECT origination_node AS node
+      FROM site s,
+           segment g
+     WHERE s.id = {0}
+       AND s.site_name = g.origination_site_name
+    UNION
+    SELECT destination_node AS node
+      FROM site s,
+           segment g
+     WHERE s.id = {0}
+       AND s.site_name = g.destination_site_name""".format(myid)
+
+    coloc_nodes = db.executesql(sql, fields=[db.segment.origination_node], colnames=['node'], as_dict=False)
+\end{verbatim}
+
+\hypertarget{tutoriales-en-la-red}{%
+\section{Tutoriales en la red}\label{tutoriales-en-la-red}}
+
+\hypertarget{killer-web-development-por-marco-laspe}{%
 \subsection{Killer Web Development por Marco
-Laspe}\label{killer-web-development-por-marco-laspe}
+Laspe}\label{killer-web-development-por-marco-laspe}}
 
 Disponible \href{http://killer-web-development.com}{aquí}
 
-\subsubsection{Cambios}\label{cambios}
+\hypertarget{cambios}{%
+\subsubsection{Cambios}\label{cambios}}
 
 \texttt{Crud} debe ser importado explícitamente:
 
@@ -654,9 +774,11 @@ def entry_post():
     return dict(form=form)
 \end{verbatim}
 
-\section{Python}\label{python}
+\hypertarget{python}{%
+\section{Python}\label{python}}
 
-\subsection{Decorators}\label{decorators}
+\hypertarget{decorators}{%
+\subsection{Decorators}\label{decorators}}
 
 \emph{Decorators} añadidos desde Python 2.4 para permitir que el
 \emph{function and method wrapping} fuese más fácil de leer y entender.

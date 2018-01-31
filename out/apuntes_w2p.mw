@@ -39,8 +39,7 @@ Y ya podemos acceder nuestro server en la dirección <code>https://localhost:800
 
 ==== Instalación de ''web2py'' ====
 
-Vamos a instalar web2py en ''/var/www'' a nivel global. Será nuestro web2py para servir aplicaciones en producción. <ref>Mejor comprobar donde está la última versión del fichero ''sources'' de web2py para hacer el wget
-</ref>
+Vamos a instalar web2py en ''/var/www'' a nivel global. Será nuestro web2py para servir aplicaciones en producción. <ref>Mejor comprobar donde está la última versión del fichero ''sources'' de web2py para hacer el wget</ref>
 
 <pre class="{bash}">cd
 mkdir tmp
@@ -129,8 +128,7 @@ uid = www-data
 gid = www-data
 limit-as = 1024
 logto = /tmp/uwsgi.log</pre>
-Tenemos que crear un fichero de configuración para el &quot;''vassal''&quot; <ref>Ver doc de uWSGI
-</ref> correspondiente a ''web2py'', el fichero <code>/etc/uwsgi/apps-available/web2py.ini</code>, con el contenido siguiente:
+Tenemos que crear un fichero de configuración para el “''vassal''” <ref>Ver doc de uWSGI</ref> correspondiente a ''web2py'', el fichero <code>/etc/uwsgi/apps-available/web2py.ini</code>, con el contenido siguiente:
 
 <pre class="{ini}">[uwsgi]
 chdir = /var/wwww/web2py
@@ -232,19 +230,19 @@ rollo
     description = TxFinder en Web2Py
     keywords    = Thope, TxFinder, web2py, python, framework
     generator   = Web2py Web Framework
-     
+
     ; Host configuration
     [host]
     names = localhost:*, 127.0.0.1:*, *:*, *
-     
+
     ; db configuration
     [db]
     ; uri       = sqlite://storage.sqlite
     uri         = mysql://dbUser:dbPass@localhost/dbName
-     
+
     migrate   = true
     pool_size = 10 ; ignored for sqlite
-     
+
     ; smtp address and credentials
     [smtp]
     server = smtp.gmail.com:587
@@ -252,11 +250,11 @@ rollo
     login  = username:password
     tls    = true
     ssl    = true
-     
+
     ; form styling
     [forms]
     formstyle = bootstrap3_inline
-    separator = </pre>
+    separator =</pre>
 <ol start="3" style="list-style-type: decimal;">
 <li>Editamos el fichero ''applications/alloer/models/db.py'' Tenemos que asegurarnos de editar esta sección para que no nos de problemas con palabras reservadas:</li></ol>
 
@@ -389,6 +387,76 @@ applications/*/progress.log
 # HOWTO-web2py-devel
 # logs/
 # cron.master</pre>
+== web2py y d3.js ==
+
+<ol style="list-style-type: decimal;">
+<li>Created a new app with the wizard (default layout, name: TestD3). Views: index,error and visualizations where I want to have the d3 stuff.</li>
+<li>Put the d3 javascript file in static/js</li>
+<li><p>In View TestD3/views/default/visualizations.html:</p>
+<pre>            {{response.files.append(URL(r=request,c='static',f='/js/d3.js'))}}
+            {{extend 'layout.html'}}
+
+            &lt;p&gt;Here we would like to have some d3.js plots&lt;/p&gt;
+            &lt;script type=&quot;text/javascript&quot;&gt;
+
+                      d3.select('body').append('svg').append('circle').style(&quot;stroke&quot;, &quot;gray&quot;).style(&quot;fill&quot;, &quot;red&quot;).attr(&quot;r&quot;, 40).attr(&quot;cx&quot;, 50).attr(&quot;cy&quot;, 50);
+            &lt;/script&gt;</pre></li></ol>
+
+This produced a red circle but the circle below the copyright 2013 – powered by web2py line. Of course I have to select properly because I want to have the circle inside:
+<section id="main" class="main row">
+<div class="span12">
+
+
+WRITE THE APPROPIATE CONTROLLER I ll take some time to dive into web2py and then I will post whatever worked with d3.
+
+(https://localhost:8000/testD3/default/visualizations)
+
+More on this subject https://groups.google.com/forum/#!msg/web2py/lngBXrQIh1g/DqEmW8FkkoEJ
+
+A nice one: https://stackoverflow.com/questions/34326343/embedding-d3-js-graph-in-a-web2py-bootstrap-page
+
+https://github.com/willimoa/welcome_d3
+
+Really important: https://github.com/monotasker/plugin_d3
+
+Interesting: https://realpython.com/blog/python/web-development-with-flask-fetching-data-with-requests/ http://grokbase.com/t/gg/d3-js/14425gneaf/web2py-d3-json-where-should-i-put-the-json-file http://www.web2pyslices.com/slice/show/1689/animations-of-svg-images-and-paths-with-d3js
+
+Pure D3 https://github.com/d3/d3/wiki/tutorials http://alignedleft.com/tutorials/d3 http://gcoch.github.io/D3-tutorial/ https://bl.ocks.org/mbostock/3883245 https://bl.ocks.org/basilesimon/29efb0e0a43dde81985c20d9a862e34e https://bl.ocks.org/d3noob/402dd382a51a4f6eea487f9a35566de0 https://leanpub.com/D3-Tips-and-Tricks/read#leanpub-auto-crossfilter-dcjs-and-d3js-for-data-discovery http://bl.ocks.org/cpbotha/5073718
+
+Google charts
+
+http://www.web2pyslices.com/slice/show/1721/google-charts-plugin
+
+= Varios =
+
+== executeSql ==
+
+Hay que estudiar esto con calma y aprender a usarlo con precisión:
+
+<pre>    coloc_node_orig = db(  (db.site.id == myid)
+                         &amp; (db.site.site_name == db.segment.origination_site_name)
+                        ).select(db.segment.origination_node.with_alias('node'),
+                                 distinct=True)
+    coloc_node_dest = db(  (db.site.id == myid)
+                         &amp; (db.site.site_name == db.segment.destination_site_name)
+                        ).select(db.segment.destination_node.with_alias('node'),
+                                 distinct=True)
+
+    sql = &quot;&quot;&quot;
+    SELECT origination_node AS node
+      FROM site s,
+           segment g
+     WHERE s.id = {0}
+       AND s.site_name = g.origination_site_name
+    UNION
+    SELECT destination_node AS node
+      FROM site s,
+           segment g
+     WHERE s.id = {0}
+       AND s.site_name = g.destination_site_name&quot;&quot;&quot;.format(myid)
+
+    coloc_nodes = db.executesql(sql, fields=[db.segment.origination_node], colnames=['node'], as_dict=False)
+</pre>
 = Tutoriales en la red =
 
 == Killer Web Development por Marco Laspe ==

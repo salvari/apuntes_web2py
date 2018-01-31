@@ -318,7 +318,7 @@ _applications/alloer/private/appconfig.ini_, tenemos que poner el uri
 que apunta a nuestra base de datos, sustituyendo _dbUser_, _dbPass_ y
 _dbName_ por valores reales.
 
-~~~~{python} 
+~~~~{python}
     ; App configuration
     [app]
     name        = PyFinder
@@ -326,19 +326,19 @@ _dbName_ por valores reales.
     description = TxFinder en Web2Py
     keywords    = Thope, TxFinder, web2py, python, framework
     generator   = Web2py Web Framework
-     
+
     ; Host configuration
     [host]
     names = localhost:*, 127.0.0.1:*, *:*, *
-     
+
     ; db configuration
     [db]
     ; uri       = sqlite://storage.sqlite
     uri         = mysql://dbUser:dbPass@localhost/dbName
-     
+
     migrate   = true
     pool_size = 10 ; ignored for sqlite
-     
+
     ; smtp address and credentials
     [smtp]
     server = smtp.gmail.com:587
@@ -346,13 +346,13 @@ _dbName_ por valores reales.
     login  = username:password
     tls    = true
     ssl    = true
-     
+
     ; form styling
     [forms]
     formstyle = bootstrap3_inline
-    separator = 
+    separator =
 ~~~~
- 
+
 3. Editamos el fichero _applications/alloer/models/db.py_ Tenemos que
 asegurarnos de editar esta sección para que no nos de problemas con
 palabras reservadas:
@@ -363,15 +363,15 @@ palabras reservadas:
              migrate_enabled=myconf.get('db.migrate'),
              check_reserved=['mysql'])
     #         check_reserved=['all'])
-~~~~ 
- 
+~~~~
+
 4. Creamos un fichero *db_custom.py* en el directorio: _applications/alloer/models_
 El fichero tiene que ser parecido al que figura a continuación.
 
     __IMPORTANTE__: en cada tabla crear el campo _id_ de tipo _integer_, es para uso interno de _web2py_
-    
+
     __IMPORTANTE__: especificar `migrate FALSE` al final en todas las tablas externas
- 
+
 ### Ejemplo de contenido del fichero *db_custom.py*
 
 ~~~~{python}
@@ -506,3 +506,64 @@ applications/*/progress.log
 # logs/
 # cron.master
 ~~~~
+
+## web2py y d3.js
+
+1. Created a new app with the wizard (default layout, name:
+   TestD3). Views: index,error and visualizations where I want to have
+   the d3 stuff.
+2. Put the d3 javascript file in static/js
+3. In View TestD3/views/default/visualizations.html:
+
+                   {{response.files.append(URL(r=request,c='static',f='/js/d3.js'))}}
+                   {{extend 'layout.html'}}
+
+                   <p>Here we would like to have some d3.js plots</p>
+                   <script type="text/javascript">
+
+                             d3.select('body').append('svg').append('circle').style("stroke", "gray").style("fill", "red").attr("r", 40).attr("cx", 50).attr("cy", 50);
+                   </script>
+
+This produced a red circle but the circle below the copyright 2013    -- powered by web2py line.
+Of course I have to select properly because I want to have the circle inside:
+  <section id="main" class="main row">
+        <div class="span12">
+
+
+WRITE THE APPROPIATE CONTROLLER
+I ll take some time to dive into web2py and then I will post whatever worked with d3.
+
+(https://localhost:8000/testD3/default/visualizations)
+
+More on this subject
+https://groups.google.com/forum/#!msg/web2py/lngBXrQIh1g/DqEmW8FkkoEJ
+
+A nice one:
+https://stackoverflow.com/questions/34326343/embedding-d3-js-graph-in-a-web2py-bootstrap-page
+
+
+https://github.com/willimoa/welcome_d3
+
+Really important:
+https://github.com/monotasker/plugin_d3
+
+
+Interesting:
+https://realpython.com/blog/python/web-development-with-flask-fetching-data-with-requests/
+http://grokbase.com/t/gg/d3-js/14425gneaf/web2py-d3-json-where-should-i-put-the-json-file
+http://www.web2pyslices.com/slice/show/1689/animations-of-svg-images-and-paths-with-d3js
+
+
+Pure D3
+https://github.com/d3/d3/wiki/tutorials
+http://alignedleft.com/tutorials/d3
+http://gcoch.github.io/D3-tutorial/
+https://bl.ocks.org/mbostock/3883245
+https://bl.ocks.org/basilesimon/29efb0e0a43dde81985c20d9a862e34e
+https://bl.ocks.org/d3noob/402dd382a51a4f6eea487f9a35566de0
+https://leanpub.com/D3-Tips-and-Tricks/read#leanpub-auto-crossfilter-dcjs-and-d3js-for-data-discovery
+http://bl.ocks.org/cpbotha/5073718
+
+Google charts
+
+http://www.web2pyslices.com/slice/show/1721/google-charts-plugin
